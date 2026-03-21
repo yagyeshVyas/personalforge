@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PersonalForge v10</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#060710;--s1:#0b0c1a;--s2:#101120;--s3:#161728;--border:#1c1e32;
+--blue:#4f8ef7;--green:#20d4a0;--yellow:#f5c030;--purple:#a78bfa;--red:#f77070;--orange:#fb923c;
+--text:#dde0f5;--muted:#3e4268;--muted2:#5a5f85;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;}
+::-webkit-scrollbar{width:4px;} ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.app{display:grid;grid-template-columns:220px 1fr;min-height:100vh;}
+
+/* SIDEBAR */
+.sb{background:var(--s1);border-right:1px solid var(--border);padding:18px 12px;
+  position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;gap:4px;}
+.logo{padding:8px 6px 16px;border-bottom:1px solid var(--border);margin-bottom:6px;}
+.logo-t{font-size:.95rem;font-weight:800;background:linear-gradient(135deg,#4f8ef7,#20d4a0);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.logo-s{font-size:.58rem;font-family:'JetBrains Mono',monospace;color:var(--muted2);margin-top:2px;}
+.ni{display:flex;align-items:center;gap:8px;padding:8px 9px;border-radius:7px;
+  cursor:pointer;border:1px solid transparent;font-size:.77rem;font-weight:500;color:var(--muted2);transition:all .15s;}
+.ni:hover{background:var(--s2);color:var(--text);}
+.ni.active{background:rgba(79,142,247,.1);border-color:rgba(79,142,247,.2);color:var(--blue);}
+.ni.done{color:var(--green);}
+.nn{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);display:flex;
+  align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;font-weight:600;flex-shrink:0;background:var(--s2);}
+.ni.active .nn{border-color:var(--blue);color:var(--blue);}
+.ni.done .nn{border-color:var(--green);color:var(--green);background:rgba(32,212,160,.08);}
+.slinks{margin-top:auto;padding-top:12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:2px;}
+.sl{display:block;font-size:.62rem;font-family:'JetBrains Mono',monospace;color:var(--muted2);text-decoration:none;padding:3px 5px;border-radius:3px;}
+.sl:hover{color:var(--blue);}
+
+/* MAIN */
+.main{padding:32px;max-width:920px;}
+.hero{background:linear-gradient(150deg,#07081a,#0f081d,#06100f);border:1px solid var(--border);
+  border-radius:16px;padding:32px 40px;margin-bottom:24px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 50% 60% at 5% 50%,rgba(79,142,247,.08),transparent),
+  radial-gradient(ellipse 35% 45% at 95% 30%,rgba(32,212,160,.05),transparent);}
+.ht{font-size:2.2rem;font-weight:800;line-height:1.1;margin-bottom:7px;}
+.ht span{background:linear-gradient(135deg,#4f8ef7,#20d4a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hs{color:var(--muted2);font-size:.85rem;margin-bottom:12px;}
+.bdg{font-family:'JetBrains Mono',monospace;font-size:.58rem;padding:2px 8px;border-radius:6px;display:inline-block;margin:2px;}
+.bb{background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.25);color:var(--blue);}
+.bg{background:rgba(32,212,160,.1);border:1px solid rgba(32,212,160,.25);color:var(--green);}
+.bp{background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.25);color:var(--purple);}
+.bo{background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.25);color:var(--orange);}
+
+/* SECTIONS */
+.sec{display:none;} .sec.active{display:block;}
+.stitle{font-size:1.3rem;font-weight:700;margin-bottom:4px;}
+.ssub{color:var(--muted2);font-size:.82rem;margin-bottom:18px;}
+
+/* CARDS */
+.card{background:var(--s1);border:1px solid var(--border);border-radius:11px;padding:18px;margin-bottom:12px;}
+.ctit{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--muted2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:11px;}
+.card-glow{background:linear-gradient(135deg,rgba(79,142,247,.05),rgba(32,212,160,.02));border-color:rgba(79,142,247,.2);}
+
+/* STAT GRID */
+.sg{display:grid;gap:8px;margin:8px 0;}
+.sg3{grid-template-columns:repeat(3,1fr);}
+.sg4{grid-template-columns:repeat(4,1fr);}
+.sb2{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:11px;text-align:center;}
+.sv{font-size:1.3rem;font-weight:800;color:var(--blue);font-family:'JetBrains Mono',monospace;line-height:1;}
+.sl2{font-size:.56rem;color:var(--muted2);margin-top:2px;font-family:'JetBrains Mono',monospace;}
+
+/* BUTTONS */
+.btn{padding:10px 20px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:600;
+  font-size:.73rem;cursor:pointer;border:none;transition:all .15s;display:inline-flex;align-items:center;gap:6px;}
+.btn-p{background:linear-gradient(135deg,var(--blue),#3a6fd8);color:#fff;}
+.btn-p:hover{opacity:.85;transform:translateY(-1px);}
+.btn-s{background:linear-gradient(135deg,var(--green),#18a87e);color:#000;font-weight:700;}
+.btn-s:hover{opacity:.85;}
+.btn-o{background:transparent;border:1px solid var(--border);color:var(--text);}
+.btn-o:hover{border-color:var(--blue);color:var(--blue);}
+.btn-full{width:100%;justify-content:center;}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important;}
+
+/* PROGRESS */
+.pw{margin:10px 0;}
+.pl{font-size:.68rem;color:var(--muted2);margin-bottom:5px;font-family:'JetBrains Mono',monospace;}
+.pb{height:4px;background:var(--s2);border-radius:2px;overflow:hidden;}
+.pf{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:2px;transition:width .3s;}
+
+/* ── UNIFIED RESOURCE PANEL ── */
+.res-panel{background:var(--s1);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:14px;}
+.res-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--s2);}
+.res-tab{flex:1;padding:11px 8px;text-align:center;cursor:pointer;font-size:.73rem;
+  font-weight:600;color:var(--muted2);border-bottom:2px solid transparent;transition:all .15s;
+  font-family:'JetBrains Mono',monospace;}
+.res-tab:hover{color:var(--text);}
+.res-tab.active{color:var(--blue);border-bottom-color:var(--blue);background:rgba(79,142,247,.06);}
+.res-body{padding:18px;}
+.res-pane{display:none;} .res-pane.active{display:block;}
+
+/* Upload zone */
+.upz{border:2px dashed rgba(79,142,247,.25);border-radius:10px;padding:28px;
+  text-align:center;cursor:pointer;transition:all .15s;position:relative;background:rgba(79,142,247,.02);}
+.upz:hover{border-color:var(--blue);background:rgba(79,142,247,.05);}
+.upz.drag{border-color:var(--green);background:rgba(32,212,160,.05);}
+#fi{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.fi-row{display:flex;align-items:center;gap:9px;background:var(--s2);border:1px solid var(--border);
+  border-radius:7px;padding:8px 11px;margin-bottom:5px;}
+.fi-name{font-size:.78rem;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fi-sel{width:110px;padding:4px 7px;font-size:.7rem;background:var(--s1);border:1px solid var(--border);
+  border-radius:5px;color:var(--text);outline:none;}
+.fi-rm{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:.9rem;padding:3px;border-radius:3px;}
+.fi-rm:hover{color:var(--red);}
+
+/* URL input */
+.url-row{display:flex;gap:7px;margin-bottom:7px;}
+.url-row input{flex:1;background:var(--s2);border:1px solid var(--border);border-radius:7px;
+  color:var(--text);padding:8px 12px;font-size:.78rem;outline:none;transition:border-color .15s;}
+.url-row input:focus{border-color:var(--blue);}
+.url-res{background:var(--s3);border:1px solid var(--border);border-radius:7px;
+  padding:9px 12px;margin-bottom:7px;font-size:.76rem;}
+.ur-t{font-weight:700;color:var(--green);margin-bottom:3px;}
+.ur-w{font-size:.62rem;color:var(--muted2);font-family:'JetBrains Mono',monospace;}
+.url-warn{background:rgba(245,192,48,.06);border:1px solid rgba(245,192,48,.2);
+  border-radius:7px;padding:9px 12px;margin-bottom:7px;font-size:.76rem;}
+
+/* HF panel */
+.hf-cats{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;}
+.hf-cat{padding:5px 10px;border:1px solid var(--border);border-radius:6px;cursor:pointer;
+  font-size:.68rem;font-family:'JetBrains Mono',monospace;background:var(--s2);color:var(--muted2);transition:all .15s;}
+.hf-cat:hover{border-color:var(--blue);color:var(--text);}
+.hf-cat.active{border-color:var(--blue);background:rgba(79,142,247,.1);color:var(--blue);}
+.hf-ds-row{display:flex;align-items:center;gap:10px;background:var(--s2);border:1px solid var(--border);
+  border-radius:8px;padding:10px 13px;margin-bottom:6px;cursor:pointer;transition:all .15s;}
+.hf-ds-row:hover{border-color:var(--blue);}
+.hf-ds-row.sel{border-color:var(--green);background:rgba(32,212,160,.05);}
+.hf-ds-name{font-size:.8rem;font-weight:700;flex:1;}
+.hf-ds-desc{font-size:.66rem;color:var(--muted2);margin-top:1px;}
+.hf-manual{background:var(--s3);border:1px solid var(--border);border-radius:8px;padding:12px;margin-top:10px;}
+.hf-manual label{font-size:.68rem;color:var(--muted2);font-family:'JetBrains Mono',monospace;display:block;margin-bottom:5px;}
+.hf-settings{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0;}
+.hf-settings label{font-size:.66rem;color:var(--muted2);font-family:'JetBrains Mono',monospace;display:block;margin-bottom:3px;}
+.hf-settings select,.hf-settings input{width:100%;background:var(--s2);border:1px solid var(--border);
+  border-radius:6px;color:var(--text);padding:6px 9px;font-size:.75rem;outline:none;}
+
+/* Remote panel */
+.remote-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px;}
+.rs-card{background:var(--s3);border:1px solid var(--border);border-radius:8px;padding:10px 12px;}
+.rs-icon{font-size:1.1rem;margin-bottom:4px;}
+.rs-name{font-size:.76rem;font-weight:700;}
+.rs-desc{font-size:.62rem;color:var(--muted2);margin-top:2px;}
+
+/* Data overview bar */
+.ov-bar{background:var(--s2);border:1px solid var(--border);border-radius:10px;
+  padding:12px 16px;display:flex;align-items:center;gap:16px;margin-bottom:12px;flex-wrap:wrap;}
+.ov-item{text-align:center;}
+.ov-val{font-size:1.1rem;font-weight:800;color:var(--blue);font-family:'JetBrains Mono',monospace;}
+.ov-lbl{font-size:.58rem;color:var(--muted2);font-family:'JetBrains Mono',monospace;}
+.ov-sep{width:1px;height:36px;background:var(--border);}
+.src-tags{display:flex;gap:5px;flex-wrap:wrap;margin-left:auto;}
+
+/* HW boxes */
+.hw-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.hw-box{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
+.hw-label{font-size:.6rem;color:var(--muted2);font-family:'JetBrains Mono',monospace;margin-bottom:3px;}
+.hw-val{font-size:.92rem;font-weight:700;}
+.hw-sub{font-size:.62rem;color:var(--muted2);margin-top:2px;}
+
+/* Cleaning results */
+.tech-list{display:grid;grid-template-columns:repeat(2,1fr);gap:4px;margin:8px 0;}
+.tech-item{display:flex;align-items:center;gap:6px;font-size:.7rem;padding:4px 7px;
+  background:var(--s2);border-radius:5px;}
+.tech-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;}
+.tech-count{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--muted2);}
+
+/* Cat grid */
+.cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
+.cc{background:var(--s2);border:2px solid var(--border);border-radius:9px;padding:12px 8px;
+  cursor:pointer;text-align:center;transition:all .15s;}
+.cc:hover{border-color:var(--blue);}
+.cc.sel{border-color:var(--green);background:rgba(32,212,160,.06);}
+.cc-icon{font-size:1.3rem;margin-bottom:5px;}
+.cc-name{font-size:.68rem;font-weight:700;}
+
+/* Model match card */
+.mm-card{background:linear-gradient(135deg,rgba(79,142,247,.05),rgba(32,212,160,.03));
+  border:1px solid rgba(79,142,247,.2);border-radius:10px;padding:16px;margin-bottom:10px;}
+.mm-name{font-size:1rem;font-weight:800;color:var(--green);margin-bottom:5px;}
+.mm-why{font-size:.78rem;margin-bottom:8px;}
+.mm-tags{display:flex;gap:5px;flex-wrap:wrap;}
+.model-opt{display:flex;align-items:center;gap:10px;background:var(--s2);border:1px solid var(--border);
+  border-radius:8px;padding:10px 13px;margin-bottom:6px;cursor:pointer;transition:all .15s;}
+.model-opt:hover{border-color:var(--blue);}
+.model-opt.sel{border-color:var(--green);background:rgba(32,212,160,.05);}
+.mo-radio{width:14px;height:14px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;}
+.model-opt.sel .mo-radio{background:var(--green);border-color:var(--green);}
+
+/* Pair preview */
+.pp{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:11px;margin-bottom:8px;}
+.pp-q{font-size:.7rem;color:var(--yellow);font-family:'JetBrains Mono',monospace;margin-bottom:4px;}
+.pp-t{font-size:.66rem;color:var(--muted2);font-style:italic;border-left:2px solid rgba(79,142,247,.5);padding:3px 8px;margin:3px 0;}
+.pp-a{font-size:.74rem;}
+
+/* Mode grid */
+.mode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.mc{background:var(--s2);border:2px solid var(--border);border-radius:9px;padding:13px;cursor:pointer;transition:all .15s;}
+.mc:hover{border-color:var(--blue);}
+.mc.sel{border-color:var(--green);background:rgba(32,212,160,.05);}
+
+/* Download */
+.dl-btn{display:flex;align-items:center;gap:11px;background:var(--s2);border:1px solid var(--border);
+  border-radius:9px;padding:12px 15px;cursor:pointer;text-decoration:none;color:var(--text);
+  font-size:.8rem;font-weight:600;transition:all .15s;margin-bottom:8px;}
+.dl-btn:hover{border-color:var(--blue);color:var(--blue);}
+.step-guide{counter-reset:sg;}
+.sg-step{display:flex;gap:12px;margin-bottom:14px;}
+.sg-step::before{content:counter(sg);counter-increment:sg;width:24px;height:24px;border-radius:50%;
+  background:var(--s2);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:600;color:var(--blue);flex-shrink:0;}
+.sg-title{font-weight:700;font-size:.82rem;margin-bottom:2px;}
+.sg-desc{font-size:.74rem;color:var(--muted2);line-height:1.5;}
+.code-blk{background:#080910;border:1px solid var(--border);border-radius:7px;padding:9px 12px;
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;color:#90d490;overflow-x:auto;margin:5px 0;}
+.info{border-radius:8px;padding:9px 13px;margin:8px 0;font-size:.78rem;line-height:1.6;}
+.ib{background:rgba(79,142,247,.06);border:1px solid rgba(79,142,247,.18);color:#8ab4f8;}
+.ig{background:rgba(32,212,160,.06);border:1px solid rgba(32,212,160,.18);color:#5ddfc0;}
+.iy{background:rgba(245,192,48,.06);border:1px solid rgba(245,192,48,.18);color:#f5d060;}
+
+/* Toast */
+#toast{position:fixed;bottom:18px;right:18px;background:var(--s1);border:1px solid var(--border);
+  border-radius:8px;padding:9px 16px;font-size:.74rem;font-family:'JetBrains Mono',monospace;
+  z-index:999;transform:translateY(60px);opacity:0;transition:all .25s;max-width:280px;}
+#toast.show{transform:translateY(0);opacity:1;}
+#toast.success{border-color:var(--green);color:var(--green);}
+#toast.error{border-color:var(--red);color:var(--red);}
+#toast.warn{border-color:var(--yellow);color:var(--yellow);}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<nav class="sb">
+  <div class="logo">
+    <div class="logo-t">PersonalForge v10</div>
+    <div class="logo-s">by @yagyeshVyas</div>
+  </div>
+  <div class="ni active" onclick="go('scan',this)" id="nav-scan"><div class="nn">1</div>Hardware Scan</div>
+  <div class="ni" onclick="go('resources',this)" id="nav-resources"><div class="nn">2</div>Add Resources</div>
+  <div class="ni" onclick="go('clean',this)" id="nav-clean"><div class="nn">3</div>Filter & Clean</div>
+  <div class="ni" onclick="go('match',this)" id="nav-match"><div class="nn">4</div>Match Model</div>
+  <div class="ni" onclick="go('pairs',this)" id="nav-pairs"><div class="nn">5</div>Build Pairs</div>
+  <div class="ni" onclick="go('notebook',this)" id="nav-notebook"><div class="nn">6</div>Get Notebook</div>
+  <div class="ni" onclick="go('howto',this)" id="nav-howto"><div class="nn">?</div>How to Use</div>
+  <div class="slinks">
+    <a href="https://github.com/yagyeshVyas/personalforge" target="_blank" class="sl">★ GitHub</a>
+    <a href="https://www.linkedin.com/in/yagyeshvyas/" target="_blank" class="sl">💼 LinkedIn</a>
+    <a href="https://lmstudio.ai" target="_blank" class="sl">🖥️ LM Studio</a>
+    <a href="https://ollama.com" target="_blank" class="sl">⚡ Ollama</a>
+    <a href="https://colab.research.google.com" target="_blank" class="sl">☁️ Colab</a>
+  </div>
+</nav>
+
+<main class="main">
+<div class="hero">
+  <h1 class="ht">Build <span>Your Own AI</span></h1>
+  <p class="hs">Hardware scan → Add resources → Clean data → Match model → Train → Download GGUF</p>
+  <div>
+    <span class="bdg bg">$0.00 forever</span>
+    <span class="bdg bo">1-2M samples</span>
+    <span class="bdg bp">Web Search</span>
+    <span class="bdg bb">HW scanner</span>
+    <span class="bdg bp">HF streaming</span>
+    <span class="bdg bb">Google Drive</span>
+    <span class="bdg bb">Dropbox / S3</span>
+    <span class="bdg bo">17-tech cleaner</span>
+    <span class="bdg bg">NEFTune + DPO</span>
+    <span class="bdg bb">BGE-M3 RAG</span>
+    <span class="bdg bg">Offline forever</span>
+  </div>
+</div>
+
+<!-- ── 1. HARDWARE SCAN ── -->
+<div id="section-scan" class="sec active">
+  <div class="stitle">🖥️ Hardware Scan</div>
+  <p class="ssub">Checks your RAM, GPU, and disk space — then recommends the best model size for your machine.</p>
+  <div class="card">
+    <div class="ctit">WHAT GETS CHECKED</div>
+    <div style="font-size:.8rem;line-height:1.9;color:var(--muted2);">
+      🧠 RAM — total memory available<br>
+      ⚡ GPU — name, VRAM, type (CUDA / Metal / CPU)<br>
+      💾 Disk — free space for GGUF download
+    </div>
+    <div class="info ib" style="margin-top:10px;">Only hardware is scanned. No files are read from your computer.</div>
+  </div>
+  <button class="btn btn-p btn-full" onclick="scanHW()" id="scan-btn">🖥️ Scan My Hardware →</button>
+  <div id="hw-result" style="display:none;margin-top:14px;">
+    <div class="card">
+      <div class="ctit">YOUR SYSTEM</div>
+      <div class="hw-grid">
+        <div class="hw-box"><div class="hw-label">RAM</div><div class="hw-val" id="hw-ram">-</div><div class="hw-sub" id="hw-ram-tier"></div></div>
+        <div class="hw-box"><div class="hw-label">GPU</div><div class="hw-val" id="hw-gpu">-</div><div class="hw-sub" id="hw-vram"></div></div>
+        <div class="hw-box"><div class="hw-label">DISK FREE</div><div class="hw-val" id="hw-disk">-</div><div class="hw-sub" id="hw-os"></div></div>
+      </div>
+    </div>
+    <div class="info ig" id="hw-rec"></div>
+    <button class="btn btn-s btn-full" onclick="go('resources',document.getElementById('nav-resources'))">Next: Add Resources →</button>
+  </div>
+</div>
+
+<!-- ── 2. UNIFIED RESOURCE PANEL ── -->
+<div id="section-resources" class="sec">
+  <div class="stitle">📦 Add Resources</div>
+  <p class="ssub">All data sources in one place. Use as many as you want — they all combine together.</p>
+
+  <!-- Live data overview bar -->
+  <div class="ov-bar" id="ov-bar" style="display:none;">
+    <div class="ov-item"><div class="ov-val" id="ov-chunks">0</div><div class="ov-lbl">CHUNKS</div></div>
+    <div class="ov-sep"></div>
+    <div class="ov-item"><div class="ov-val" id="ov-words">0</div><div class="ov-lbl">WORDS</div></div>
+    <div class="ov-sep"></div>
+    <div class="src-tags" id="ov-src"></div>
+  </div>
+
+  <!-- Unified resource panel with 4 tabs -->
+  <div class="res-panel">
+    <div class="res-tabs">
+      <div class="res-tab active" onclick="resTab('files',this)">📁 Files</div>
+      <div class="res-tab" onclick="resTab('hf',this)">🤗 HF Datasets</div>
+      <div class="res-tab" onclick="resTab('web',this)">🌐 Web Search</div>
+      <div class="res-tab" onclick="resTab('urls',this)">🔗 URLs</div>
+      <div class="res-tab" onclick="resTab('remote',this)">☁️ Cloud & Remote</div>
+    </div>
+    <div class="res-body">
+
+      <!-- FILES pane -->
+      <div id="pane-files" class="res-pane active">
+        <div class="upz" id="upz">
+          <input type="file" id="fi" multiple accept=".pdf,.docx,.doc,.xlsx,.xls,.csv,.txt,.md,.py,.js,.ts,.html,.css,.java,.cpp,.c,.rs,.go,.rb,.sql,.ipynb,.json,.yaml">
+          <div style="font-size:1.6rem;margin-bottom:8px;">📁</div>
+          <div style="font-weight:700;font-size:.9rem;margin-bottom:3px;">Drop files or click to browse</div>
+          <div style="font-size:.74rem;color:var(--muted2);">PDF · Word · Excel · CSV · TXT · Python · JS · Java · C++ · Rust · Go · Jupyter</div>
+        </div>
+        <div id="file-list" style="margin-top:10px;"></div>
+        <div id="upload-btn-wrap" style="display:none;margin-top:8px;">
+          <button class="btn btn-p btn-full" onclick="uploadFiles()">📥 Upload These Files</button>
+        </div>
+        <div id="upload-done" style="display:none;" class="info ig" style="margin-top:8px;"></div>
+      </div>
+
+      <!-- HF DATASETS pane -->
+      <div id="pane-hf" class="res-pane">
+
+        <!-- HF Token Auth -->
+        <div id="hf-token-box" style="background:var(--s3);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:14px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted2);text-transform:uppercase;letter-spacing:.1em;">HUGGINGFACE TOKEN (OPTIONAL)</div>
+            <div id="hf-token-status" style="font-size:.65rem;font-family:'JetBrains Mono',monospace;color:var(--muted2);">Not logged in</div>
+          </div>
+          <div style="display:flex;gap:7px;align-items:center;">
+            <input id="hf-token-input" type="password" placeholder="hf_xxxxxxxxxxxxxxxxxxxx — needed for gated datasets"
+              style="flex:1;background:var(--s2);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:8px 12px;font-size:.75rem;font-family:'JetBrains Mono',monospace;outline:none;">
+            <button class="btn btn-p" onclick="setHFToken()" id="hf-token-btn" style="white-space:nowrap;">Verify & Save</button>
+            <button class="btn btn-o" onclick="clearHFToken()" id="hf-token-clear" style="display:none;">Clear</button>
+          </div>
+          <div style="margin-top:6px;font-size:.66rem;color:var(--muted2);">
+            Get your free token at <a href="https://huggingface.co/settings/tokens" target="_blank" style="color:var(--blue);">huggingface.co/settings/tokens</a>
+            — needed for gated datasets like <code style="color:var(--purple);">bigcode/the-stack-v2</code>
+          </div>
+          <div id="hf-token-msg" style="display:none;" class="info ig" style="margin-top:6px;"></div>
+        </div>
+
+        <!-- Search bar -->
+        <div style="display:flex;gap:7px;margin-bottom:10px;">
+          <input id="hf-search" placeholder="Search any dataset... e.g. python, medical, alpaca, wikipedia"
+            style="flex:1;background:var(--s2);border:1px solid var(--border);border-radius:7px;
+            color:var(--text);padding:8px 12px;font-size:.78rem;outline:none;"
+            oninput="searchHFDatasets(this.value)">
+          <button class="btn btn-o" onclick="clearHFSearch()" style="white-space:nowrap;padding:8px 12px;">✕ Clear</button>
+        </div>
+        <div id="hf-search-results" style="display:none;margin-bottom:10px;"></div>
+
+        <!-- Category tabs -->
+        <div class="ctit">OR BROWSE BY CATEGORY</div>
+        <div class="hf-cats" id="hf-cats"></div>
+
+        <!-- Dataset list -->
+        <div id="hf-ds-list" style="min-height:40px;"></div>
+
+        <!-- Stream settings — shown when dataset selected -->
+        <div id="hf-settings-area" style="display:none;background:var(--s3);border:1px solid var(--border);border-radius:8px;padding:12px;margin-top:8px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;">STREAM SETTINGS</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:7px;margin-bottom:10px;">
+            <div>
+              <label style="font-size:.62rem;color:var(--muted2);font-family:'JetBrains Mono',monospace;display:block;margin-bottom:3px;">CONFIG</label>
+              <select id="hf-config" style="width:100%;background:var(--s2);border:1px solid var(--border);border-radius:5px;color:var(--text);padding:5px 7px;font-size:.72rem;outline:none;"></select>
+            </div>
+            <div>
+              <label style="font-size:.62rem;color:var(--muted2);font-family:'JetBrains Mono',monospace;display:block;margin-bottom:3px;">SPLIT</label>
+              <select id="hf-split" style="width:100%;background:var(--s2);border:1px solid var(--border);border-radius:5px;color:var(--text);padding:5px 7px;font-size:.72rem;outline:none;">
+                <option value="train" selected>train</option>
+                <option value="test">test</option>
+                <option value="validation">validation</option>
+              </select>
+            </div>
+            <div id="hf-lang-wrap">
+              <label style="font-size:.62rem;color:var(--muted2);font-family:'JetBrains Mono',monospace;display:block;margin-bottom:3px;">LANGUAGE</label>
+              <select id="hf-lang" style="width:100%;background:var(--s2);border:1px solid var(--border);border-radius:5px;color:var(--text);padding:5px 7px;font-size:.72rem;outline:none;">
+                <option value="">All</option>
+                <option>Python</option><option>JavaScript</option><option>TypeScript</option>
+                <option>Java</option><option>C++</option><option>Go</option><option>Rust</option><option>SQL</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:.62rem;color:var(--muted2);font-family:'JetBrains Mono',monospace;display:block;margin-bottom:3px;">SAMPLES</label>
+              <select id="hf-n" style="width:100%;background:var(--s2);border:1px solid var(--border);border-radius:5px;color:var(--text);padding:5px 7px;font-size:.72rem;outline:none;">
+                <option value="10000">10K</option>
+                <option value="50000">50K</option>
+                <option value="200000" selected>200K ⭐</option>
+                <option value="500000">500K</option>
+                <option value="1000000">1M</option>
+                <option value="2000000">2M</option>
+              </select>
+            </div>
+          </div>
+          <div id="hf-gated-warn" style="display:none;" class="info iy" style="margin-bottom:8px;"></div>
+          <div style="display:flex;gap:7px;">
+            <button class="btn btn-p btn-full" onclick="streamHF()" id="hf-btn">⚡ Stream via API</button>
+          </div>
+          <div id="hf-prog" style="display:none;" class="pw" style="margin-top:8px;">
+            <div class="pl" id="hf-pl">Streaming...</div>
+            <div class="pb"><div class="pf" id="hf-pf" style="width:20%;"></div></div>
+          </div>
+          <div id="hf-done" style="display:none;" class="info ig" style="margin-top:6px;"></div>
+        </div>
+
+        <!-- Manual HF + API section -->
+        <div class="hf-manual">
+          <label>ADD ANY DATASET — BY ID OR API</label>
+
+          <!-- Dataset ID input -->
+          <div class="url-row" style="margin-bottom:6px;">
+            <input id="hf-manual-input" placeholder="owner/dataset-name  e.g. bigcode/the-stack-v2" style="font-family:'JetBrains Mono',monospace;font-size:.72rem;">
+            <button class="btn btn-o" onclick="fetchDatasetInfo()" id="hf-info-btn" style="white-space:nowrap;">Check</button>
+          </div>
+
+          <!-- Dataset info result -->
+          <div id="hf-ds-info" style="display:none;background:var(--s2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;margin-bottom:8px;font-size:.74rem;">
+            <div id="hf-ds-info-content"></div>
+          </div>
+
+          <!-- Config + Split + Samples row -->
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:8px;">
+            <div>
+              <label style="font-size:.62rem;color:var(--muted2);font-family:'JetBrains Mono',monospace;display:block;margin-bottom:3px;">CONFIG</label>
+              <input id="hf-api-config" placeholder="default" style="width:100%;background:var(--s2);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 9px;font-size:.74rem;outline:none;font-family:'JetBrains Mono',monospace;">
+            </div>
+            <div>
+              <label style="font-size:.62rem;color:var(--muted2);font-family:'JetBrains Mono',monospace;display:block;margin-bottom:3px;">SPLIT</label>
+              <input id="hf-api-split" value="train" style="width:100%;background:var(--s2);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 9px;font-size:.74rem;outline:none;font-family:'JetBrains Mono',monospace;">
+            </div>
+            <div>
+              <label style="font-size:.62rem;color:var(--muted2);font-family:'JetBrains Mono',monospace;display:block;margin-bottom:3px;">SAMPLES</label>
+              <select id="hf-api-n" style="width:100%;background:var(--s2);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 9px;font-size:.74rem;outline:none;">
+                <option value="10000">10K</option>
+                <option value="50000">50K</option>
+                <option value="200000" selected>200K ⭐</option>
+                <option value="500000">500K</option>
+                <option value="1000000">1M</option>
+                <option value="2000000">2M</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Method toggle -->
+          <div style="display:flex;gap:6px;margin-bottom:8px;">
+            <button class="btn btn-p btn-full" onclick="streamAPIMethod()" id="hf-api-btn">
+              ⚡ Stream via API (recommended)
+            </button>
+            <button class="btn btn-o" onclick="streamManual()" id="hf-lib-btn" style="white-space:nowrap;" title="Uses datasets library — slower but more compatible">
+              datasets lib
+            </button>
+          </div>
+
+          <div style="font-size:.62rem;color:var(--muted2);line-height:1.5;">
+            <strong style="color:var(--blue);">API method</strong> — uses <code>datasets-server.huggingface.co</code> directly (same as the curl in HF docs). Works with gated datasets when token is set.<br>
+            <strong style="color:var(--muted2);">datasets lib</strong> — uses Python library. Slower, needs <code>pip install datasets</code>.
+          </div>
+
+          <div id="hf-manual-prog" style="display:none;" class="pw" style="margin-top:8px;">
+            <div class="pl" id="hf-manual-pl">Fetching...</div>
+            <div class="pb"><div class="pf" id="hf-manual-pf" style="width:20%;"></div></div>
+          </div>
+          <div id="hf-manual-done" style="display:none;" class="info ig" style="margin-top:6px;"></div>
+        </div>
+      </div>
+
+
+      <!-- WEB SEARCH pane -->
+      <div id="pane-web" class="res-pane">
+        <div class="info ib" style="margin-bottom:12px;">
+          Searches the internet and collects training data automatically.
+          Uses DuckDuckGo, Wikipedia, arXiv, Stack Overflow, GitHub, and Project Gutenberg.
+          <strong>No API keys needed.</strong>
+        </div>
+
+        <div class="card" style="background:var(--s3);border-color:var(--border);padding:14px;margin-bottom:10px;">
+          <div class="ctit">SEARCH TOPIC</div>
+          <input id="web-topic" placeholder="e.g. Python machine learning  or  React hooks  or  quantum computing"
+            style="width:100%;background:var(--s2);border:1px solid var(--border);border-radius:7px;
+            color:var(--text);padding:9px 12px;font-size:.8rem;outline:none;margin-bottom:10px;">
+
+          <div class="ctit">DATA SOURCES (select multiple)</div>
+          <div id="web-sources" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;"></div>
+
+          <div class="ctit">TARGET SAMPLES</div>
+          <div id="sample-btns" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px;"></div>
+          <div style="font-size:.66rem;color:var(--muted2);margin-bottom:10px;">
+            💡 <strong>200K+ recommended</strong> for a good model. 1M+ for production quality.
+            Each source contributes equal amounts.
+          </div>
+
+          <button class="btn btn-p btn-full" onclick="collectWeb()" id="web-btn">
+            🌐 Collect Web Data →
+          </button>
+        </div>
+
+        <div id="web-prog" style="display:none;" class="pw">
+          <div class="pl" id="web-pl">Collecting...</div>
+          <div class="pb"><div class="pf" id="web-pf" style="width:0%;"></div></div>
+        </div>
+        <div id="web-done" style="display:none;" class="info ig"></div>
+
+        <div class="info iy" style="margin-top:10px;font-size:.72rem;">
+          ⚠️ Web collection is slower than HF streaming.
+          For 200K samples expect ~20-40 minutes.
+          For 1M+ samples use HF datasets — much faster.
+        </div>
+      </div>
+
+      <!-- URLS pane -->
+      <div id="pane-urls" class="res-pane">
+        <div class="info ib" style="margin-bottom:10px;">Fetches clean text from any public webpage, Wikipedia, arXiv, GitHub repo, or raw text file.</div>
+        <div id="url-rows">
+          <div class="url-row"><input id="url-1" placeholder="https://en.wikipedia.org/wiki/...  or  https://github.com/owner/repo  or  https://arxiv.org/abs/..."><button class="btn btn-p" onclick="fetchURL('url-1')">Fetch</button></div>
+        </div>
+        <button onclick="addURLRow()" style="background:none;border:none;color:var(--muted2);font-size:.72rem;cursor:pointer;padding:3px;">+ Add another URL</button>
+        <div id="url-results" style="margin-top:10px;"></div>
+      </div>
+
+      <!-- REMOTE / CLOUD pane -->
+      <div id="pane-remote" class="res-pane">
+        <div class="remote-grid">
+          <div class="rs-card"><div class="rs-icon">📁</div><div class="rs-name">Google Drive</div><div class="rs-desc">Share link → paste here</div></div>
+          <div class="rs-card"><div class="rs-icon">📦</div><div class="rs-name">Dropbox</div><div class="rs-desc">Shared link → direct download</div></div>
+          <div class="rs-card"><div class="rs-icon">☁️</div><div class="rs-name">AWS S3</div><div class="rs-desc">Public bucket URL or s3://</div></div>
+          <div class="rs-card"><div class="rs-icon">📋</div><div class="rs-name">JSON / JSONL API</div><div class="rs-desc">Any API endpoint with JSON data</div></div>
+          <div class="rs-card"><div class="rs-icon">📝</div><div class="rs-name">GitHub Gist</div><div class="rs-desc">Any gist.github.com URL</div></div>
+          <div class="rs-card"><div class="rs-icon">📄</div><div class="rs-name">Direct File Link</div><div class="rs-desc">.pdf .txt .csv .py .docx</div></div>
+        </div>
+        <div id="remote-rows">
+          <div class="url-row"><input id="rem-1" placeholder="https://drive.google.com/...  or  https://dropbox.com/...  or  s3://bucket/file.csv"><button class="btn btn-p" onclick="fetchRemote('rem-1')">Fetch</button></div>
+        </div>
+        <button onclick="addRemoteRow()" style="background:none;border:none;color:var(--muted2);font-size:.72rem;cursor:pointer;padding:3px;">+ Add another link</button>
+        <div id="remote-results" style="margin-top:10px;"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <button class="btn btn-s btn-full" onclick="go('clean',document.getElementById('nav-clean'))">Next: Filter & Clean →</button>
+</div>
+
+<!-- ── 3. FILTER & CLEAN ── -->
+<div id="section-clean" class="sec">
+  <div class="stitle">🧹 Filter & Clean Data</div>
+  <p class="ssub">17-technique pipeline. Removes noise, duplicates, PII, boilerplate. Clean data = much better model.</p>
+  <div class="card">
+    <div class="ctit">17 CLEANING TECHNIQUES</div>
+    <div class="tech-list" id="tech-list">
+      <!-- filled by JS -->
+    </div>
+  </div>
+  <button class="btn btn-p btn-full" onclick="cleanData()" id="clean-btn">🧹 Run 17-Technique Pipeline →</button>
+  <div id="clean-prog" style="display:none;" class="pw">
+    <div class="pl" id="clean-pl">Cleaning...</div>
+    <div class="pb"><div class="pf" id="clean-pf" style="width:0%"></div></div>
+  </div>
+  <div id="clean-result" style="display:none;margin-top:12px;">
+    <div class="card card-glow">
+      <div class="ctit">RESULTS</div>
+      <div class="sg sg3">
+        <div class="sb2"><div class="sv" id="cr-orig">0</div><div class="sl2">ORIGINAL</div></div>
+        <div class="sb2"><div class="sv" id="cr-final">0</div><div class="sl2">AFTER CLEAN</div></div>
+        <div class="sb2"><div class="sv" id="cr-rem">0%</div><div class="sl2">NOISE REMOVED</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+        <span style="font-size:.76rem;color:var(--muted2);">Quality:</span>
+        <span id="cr-qlabel" style="font-weight:700;font-size:.86rem;"></span>
+      </div>
+      <div class="pw" style="margin-top:6px;"><div class="pb" style="height:6px;"><div class="pf" id="cr-bar" style="width:0%"></div></div></div>
+      <div id="tech-hits" style="margin-top:10px;display:flex;gap:5px;flex-wrap:wrap;"></div>
+    </div>
+    <button class="btn btn-s btn-full" onclick="go('match',document.getElementById('nav-match'))">Next: Match Model →</button>
+  </div>
+</div>
+
+<!-- ── 4. MATCH MODEL ── -->
+<div id="section-match" class="sec">
+  <div class="stitle">🤖 Select Your Model</div>
+  <p class="ssub">Search any HuggingFace model, paste any model ID, or pick from recommended. Works with every model.</p>
+
+  <!-- Universal search -->
+  <div class="card">
+    <div class="ctit">SEARCH OR PASTE ANY MODEL</div>
+    <div style="display:flex;gap:7px;margin-bottom:8px;">
+      <input id="model-search-input" placeholder="Type to search... or paste full ID: unsloth/Qwen3.5-4B  or  HauhauCS/Qwen3.5-4B-Uncensored-HauhauCS-Aggressive"
+        style="flex:1;background:var(--s2);border:1px solid var(--border);border-radius:7px;
+        color:var(--text);padding:9px 12px;font-size:.78rem;outline:none;"
+        oninput="searchModels(this.value)" onkeydown="if(event.key==='Enter')resolveModel()">
+      <button class="btn btn-p" onclick="resolveModel()" style="white-space:nowrap;">Use This Model</button>
+    </div>
+    <div style="font-size:.64rem;color:var(--muted2);line-height:1.7;">
+      Paste any model ID from <a href="https://huggingface.co/models" target="_blank" style="color:var(--blue);">huggingface.co/models</a>
+      — format: <code style="color:var(--blue);">owner/model-name</code><br>
+      Examples:&nbsp;
+      <code style="color:var(--blue);cursor:pointer;" onclick="quickPick('unsloth/Qwen3.5-4B')">unsloth/Qwen3.5-4B</code> &nbsp;
+      <code style="color:var(--blue);cursor:pointer;" onclick="quickPick('unsloth/Qwen2.5-Coder-7B-Instruct')">unsloth/Qwen2.5-Coder-7B-Instruct</code> &nbsp;
+      <code style="color:var(--blue);cursor:pointer;" onclick="quickPick('HauhauCS/Qwen3.5-4B-Uncensored-HauhauCS-Aggressive')">HauhauCS/Qwen3.5-4B-Uncensored-HauhauCS-Aggressive</code>
+    </div>
+    <div id="model-search-results" style="display:none;margin-top:10px;max-height:300px;overflow-y:auto;"></div>
+  </div>
+
+  <!-- Category quick filter -->
+  <div class="card">
+    <div class="ctit">OR BROWSE BY CATEGORY</div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;" id="model-cat-tabs">
+      <button class="btn btn-o" style="padding:5px 10px;font-size:.68rem;" onclick="loadPopular('all',this)">All</button>
+      <button class="btn btn-o" style="padding:5px 10px;font-size:.68rem;" onclick="loadPopular('coding',this)">💻 Coding</button>
+      <button class="btn btn-o" style="padding:5px 10px;font-size:.68rem;" onclick="loadPopular('reasoning',this)">🧠 Reasoning</button>
+      <button class="btn btn-o" style="padding:5px 10px;font-size:.68rem;" onclick="loadPopular('general',this)">✨ General</button>
+    </div>
+    <div id="popular-models"></div>
+  </div>
+
+  <!-- Selected model info -->
+  <div id="model-selected-card" style="display:none;" class="card card-glow">
+    <div class="ctit">SELECTED MODEL</div>
+    <div style="display:flex;align-items:flex-start;gap:14px;">
+      <div style="flex:1;">
+        <div style="font-size:1rem;font-weight:800;color:var(--green);margin-bottom:5px;" id="sel-model-name">-</div>
+        <div style="font-size:.76rem;margin-bottom:8px;" id="sel-model-id"></div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;" id="sel-model-tags"></div>
+        <div id="sel-model-arch" style="font-size:.68rem;color:var(--muted2);margin-top:6px;font-family:'JetBrains Mono',monospace;"></div>
+      </div>
+    </div>
+    <div id="sel-model-gated" style="display:none;" class="info iy" style="margin-top:8px;"></div>
+    <button class="btn btn-s btn-full" style="margin-top:12px;" onclick="go('pairs',document.getElementById('nav-pairs'))">
+      Next: Build Training Data →
+    </button>
+  </div>
+</div>
+
+<!-- ── 5. BUILD PAIRS ── -->
+<div id="section-pairs" class="sec">
+  <div class="stitle">⚙️ Build Training Pairs</div>
+  <p class="ssub">Generates Q&A pairs with thinking chains. Uses Ollama if available for higher quality.</p>
+  <div class="card">
+    <div class="ctit">TRAINING MODE</div>
+    <div class="mode-grid">
+      <div class="mc sel" onclick="selMode('developer',this)"><div style="font-size:1.3rem;margin-bottom:5px;">💻</div><div style="font-weight:700;font-size:.8rem;">Developer</div><div style="font-size:.66rem;color:var(--muted2);margin-top:2px;">Code, debugging, best practices</div></div>
+      <div class="mc" onclick="selMode('thinker',this)"><div style="font-size:1.3rem;margin-bottom:5px;">🧠</div><div style="font-weight:700;font-size:.8rem;">Deep Thinker</div><div style="font-size:.66rem;color:var(--muted2);margin-top:2px;">Multi-angle, analysis, research</div></div>
+      <div class="mc" onclick="selMode('factual',this)"><div style="font-size:1.3rem;margin-bottom:5px;">✅</div><div style="font-weight:700;font-size:.8rem;">Honest / Factual</div><div style="font-size:.66rem;color:var(--muted2);margin-top:2px;">Cites sources, no guessing</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctit">QUALITY</div>
+    <select id="max-pairs" style="width:100%;background:var(--s2);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:8px 12px;font-size:.8rem;outline:none;">
+      <option value="500">Fast — 500 pairs</option>
+      <option value="2000" selected>Balanced — 2000 pairs</option>
+      <option value="5000">Best — 5000 pairs</option>
+    </select>
+  </div>
+  <button class="btn btn-p btn-full" onclick="genPairs()" id="pairs-btn">⚡ Generate Training Data →</button>
+  <div id="pairs-prog" style="display:none;" class="pw">
+    <div class="pl" id="pairs-pl">Generating...</div>
+    <div class="pb"><div class="pf" id="pairs-pf" style="width:0%"></div></div>
+  </div>
+  <div id="pairs-result" style="display:none;margin-top:12px;">
+    <div class="card card-glow">
+      <div class="ctit">PAIRS READY</div>
+      <div class="sg sg3">
+        <div class="sb2"><div class="sv" id="pr-total">0</div><div class="sl2">TOTAL PAIRS</div></div>
+        <div class="sb2"><div class="sv" id="pr-ref">0</div><div class="sl2">REFUSALS</div></div>
+        <div class="sb2"><div class="sv" id="pr-tok">0</div><div class="sl2">TOKENS EST.</div></div>
+      </div>
+      <div id="pr-llm" style="font-size:.66rem;color:var(--muted2);font-family:'JetBrains Mono',monospace;margin-top:6px;"></div>
+    </div>
+    <div id="pair-previews"></div>
+    <button class="btn btn-s btn-full" onclick="go('notebook',document.getElementById('nav-notebook'))">Next: Get Notebook →</button>
+  </div>
+</div>
+
+<!-- ── 6. NOTEBOOK ── -->
+<div id="section-notebook" class="sec">
+  <div class="stitle">🚀 Get Your Notebook</div>
+  <p class="ssub">Download 2 files → Open Google Colab → Run all → Download GGUF.</p>
+  <button class="btn btn-p btn-full" onclick="genNotebook()" id="nb-btn">📓 Generate Notebook</button>
+  <div id="nb-result" style="display:none;margin-top:14px;">
+    <div class="card card-glow">
+      <div class="ctit">DOWNLOAD BOTH FILES</div>
+      <a href="/api/download_notebook" class="dl-btn"><span style="font-size:1.1rem;">📓</span><div><div>build_my_ai.ipynb</div><div style="font-size:.64rem;color:var(--muted2);">The Colab notebook — open in Google Colab</div></div><span style="margin-left:auto;color:var(--blue);font-family:'JetBrains Mono',monospace;font-size:.64rem;">⬇️</span></a>
+      <a href="/api/download_pairs" class="dl-btn"><span style="font-size:1.1rem;">📊</span><div><div>training_pairs.jsonl</div><div style="font-size:.64rem;color:var(--muted2);">Upload this in Colab Cell 1</div></div><span style="margin-left:auto;color:var(--blue);font-family:'JetBrains Mono',monospace;font-size:.64rem;">⬇️</span></a>
+      <a href="https://colab.research.google.com" target="_blank" class="btn btn-s btn-full" style="text-decoration:none;margin-top:6px;">🚀 Open Google Colab →</a>
+    </div>
+    <div class="card">
+      <div class="ctit">RUN GUIDE</div>
+      <div class="step-guide">
+        <div class="sg-step"><div><div class="sg-title">Upload notebook to Colab</div><div class="sg-desc">File → Upload notebook → <code>build_my_ai.ipynb</code></div></div></div>
+        <div class="sg-step"><div><div class="sg-title">Set T4 GPU ⚠️</div><div class="sg-desc">Runtime → Change runtime type → <strong>T4 GPU</strong> → Save</div></div></div>
+        <div class="sg-step"><div><div class="sg-title">Run Cell 1 → Upload data</div><div class="sg-desc">Upload <code>training_pairs.jsonl</code> when asked</div></div></div>
+        <div class="sg-step"><div><div class="sg-title">Runtime → Run All</div><div class="sg-desc">Watch eval_loss go down. Auto-stops at best checkpoint.</div></div></div>
+        <div class="sg-step"><div><div class="sg-title">Download your GGUF</div><div class="sg-desc">Last cell auto-downloads. That's your personal AI.</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── HOW TO ── -->
+<div id="section-howto" class="sec">
+  <div class="stitle">📖 Use Your AI</div>
+  <p class="ssub">Run your GGUF with any free tool.</p>
+  <div class="card"><div class="ctit">LM STUDIO (EASIEST)</div><a href="https://lmstudio.ai" target="_blank" class="dl-btn"><span>🖥️</span><div><div>LM Studio</div><div style="font-size:.64rem;color:var(--muted2);">Desktop chat app · lmstudio.ai</div></div></a><div class="code-blk">File → Load Model → select .gguf → Chat</div></div>
+  <div class="card"><div class="ctit">OLLAMA</div><a href="https://ollama.com" target="_blank" class="dl-btn"><span>⚡</span><div><div>Ollama</div><div style="font-size:.64rem;color:var(--muted2);">Terminal · ollama.com</div></div></a><div class="code-blk">ollama run /path/to/your-model.gguf</div></div>
+  <div class="card"><div class="ctit">HUGGINGFACE (OPTIONAL)</div><a href="https://huggingface.co/new" target="_blank" class="dl-btn"><span>🌐</span><div><div>Share on HuggingFace</div><div style="font-size:.64rem;color:var(--muted2);">Free hosting · huggingface.co/new</div></div></a></div>
+</div>
+
+</main>
+</div>
+<div id="toast"></div>
+
+<script>
+const S = {files:[], mode:'developer', model:null, selHFDs:null, urlIdx:1, remIdx:1};
+
+// ── NAV ────────────────────────────────────────────────────────────────────────
+function go(name, el) {
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  document.getElementById('section-'+name).classList.add('active');
+  if(el) el.classList.add('active');
+}
+
+// ── TOAST ──────────────────────────────────────────────────────────────────────
+function toast(msg, type='success') {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='show '+type;
+  setTimeout(()=>t.className='', 3000);
+}
+
+// ── RESOURCE TABS ──────────────────────────────────────────────────────────────
+function resTab(name, el) {
+  document.querySelectorAll('.res-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.res-pane').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('pane-'+name).classList.add('active');
+}
+
+// ── HARDWARE SCAN ──────────────────────────────────────────────────────────────
+async function scanHW() {
+  document.getElementById('scan-btn').textContent='⏳ Scanning...';
+  document.getElementById('scan-btn').disabled=true;
+  const r=await fetch('/api/hw_scan',{method:'POST'}), d=await r.json();
+  document.getElementById('hw-ram').textContent=d.ram.gb+' GB';
+  document.getElementById('hw-ram-tier').textContent=d.ram.tier.toUpperCase();
+  document.getElementById('hw-gpu').textContent=d.gpu.name;
+  document.getElementById('hw-vram').textContent=d.gpu.available?(d.gpu.vram_gb+' GB VRAM'):'No GPU';
+  document.getElementById('hw-disk').textContent=d.disk.free_gb+' GB free';
+  document.getElementById('hw-os').textContent=d.os;
+  const sizeLabels={small:'Small models (1-2B)',medium:'Medium models (3-4B)',large:'Large models (7B)'};
+  document.getElementById('hw-rec').textContent='✅ Recommended model size: '+sizeLabels[d.rec||'medium'];
+  document.getElementById('hw-result').style.display='block';
+  document.getElementById('scan-btn').textContent='🔄 Re-scan';
+  document.getElementById('scan-btn').disabled=false;
+  document.getElementById('nav-scan').classList.add('done');
+  toast('Hardware scanned!');
+}
+
+// ── FILES ──────────────────────────────────────────────────────────────────────
+document.getElementById('fi').addEventListener('change', e=>{
+  S.files=Array.from(e.target.files); renderFiles();
+});
+const upz=document.getElementById('upz');
+upz.addEventListener('dragover',e=>{e.preventDefault();upz.classList.add('drag');});
+upz.addEventListener('dragleave',()=>upz.classList.remove('drag'));
+upz.addEventListener('drop',e=>{
+  e.preventDefault();upz.classList.remove('drag');
+  S.files=Array.from(e.dataTransfer.files);renderFiles();
+});
+
+function renderFiles() {
+  const types=['Books','Notes','Documents','Code','Data','Web content'];
+  const icons={pdf:'📄',docx:'📝',doc:'📝',xlsx:'📊',xls:'📊',csv:'📋',txt:'📃',md:'📃',
+               py:'🐍',js:'📜',ts:'📜',html:'🌐',java:'☕',cpp:'⚙️',rs:'🦀',go:'🐹',ipynb:'📓'};
+  document.getElementById('file-list').innerHTML=S.files.map((f,i)=>{
+    const ext=f.name.split('.').pop().toLowerCase();
+    const icon=icons[ext]||'📁';
+    const defType=(['py','js','ts','html','java','cpp','rs','go','sql','ipynb'].includes(ext))?'Code':
+                  (ext==='pdf'?'Books':(['csv','xlsx','xls'].includes(ext)?'Data':'Documents'));
+    return `<div class="fi-row">
+      <span>${icon}</span>
+      <span class="fi-name">${f.name}</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted2);">${ext.toUpperCase()}</span>
+      <select class="fi-sel" onchange="S.files[${i}].stype=this.value">
+        ${types.map(t=>`<option ${t===defType?'selected':''}>${t}</option>`).join('')}
+      </select>
+      <button class="fi-rm" onclick="S.files.splice(${i},1);renderFiles()">✕</button>
+    </div>`;
+  }).join('');
+  document.getElementById('upload-btn-wrap').style.display=S.files.length?'block':'none';
+}
+
+async function uploadFiles() {
+  if(!S.files.length){toast('No files','error');return;}
+  const fd=new FormData();
+  S.files.forEach(f=>{fd.append('files[]',f);fd.append('types[]',f.stype||'Documents');});
+  const r=await fetch('/api/upload',{method:'POST',body:fd}), d=await r.json();
+  if(d.success){
+    document.getElementById('upload-done').style.display='block';
+    document.getElementById('upload-done').textContent=`✅ Added ${d.added} chunks (${d.total} total)`;
+    S.files=[];renderFiles();refreshOV();
+    document.getElementById('nav-resources').classList.add('done');
+    toast('Uploaded! '+d.added+' chunks added');
+  }
+}
+
+// ── HF DATASETS ────────────────────────────────────────────────────────────────
+async function loadHFCats() {
+  const r=await fetch('/api/hf_categories'), cats=await r.json();
+  const el=document.getElementById('hf-cats');
+  el.innerHTML=cats.map(c=>`<div class="hf-cat" onclick="showHFCat(${JSON.stringify(c).replace(/"/g,'&quot;')},this)">${c.icon} ${c.name}</div>`).join('');
+}
+
+function showHFCat(cat, el) {
+  document.querySelectorAll('.hf-cat').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  const list=document.getElementById('hf-ds-list');
+  list.innerHTML=cat.datasets.map(ds=>`
+    <div class="hf-ds-row ${ds.recommended?'sel':''}" onclick="selHFDs(${JSON.stringify(ds).replace(/"/g,'&quot;')},this)">
+      <div style="flex:1;">
+        <div class="hf-ds-name">${ds.name} ${ds.recommended?'⭐':''}</div>
+        <div class="hf-ds-desc">${ds.description}</div>
+        <div style="margin-top:4px;"><span class="bdg bb">${ds.size}</span></div>
+      </div>
+    </div>`).join('');
+  document.getElementById('hf-settings-area').style.display='block';
+  // Auto-select recommended
+  const rec=cat.datasets.find(d=>d.recommended);
+  if(rec) S.selHFDs=rec;
+}
+
+function selHFDs(ds, el) {
+  S.selHFDs=ds;
+  document.querySelectorAll('.hf-ds-row').forEach(r=>r.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+async function streamHF() {
+  if(!S.selHFDs){toast('Select a dataset','error');return;}
+  const n=parseInt(document.getElementById('hf-n').value);
+  const lang=document.getElementById('hf-lang').value||null;
+  const split=document.getElementById('hf-split').value;
+  // Check access first
+  const ok = await checkAndStream(S.selHFDs.id, null);
+  if(!ok) return;
+  document.getElementById('hf-btn').disabled=true;
+  document.getElementById('hf-prog').style.display='block';
+  await fetch('/api/hf_stream',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({dataset_id:S.selHFDs.id,config:S.selHFDs.config||null,
+      split:S.selHFDs.split||split,fields:S.selHFDs.fields||{text:'text'},n_samples:n,language:lang})});
+  pollProgress('hf-pl','hf-pf',()=>{
+    document.getElementById('hf-done').style.display='block';
+    document.getElementById('hf-done').textContent=`✅ Streamed from ${S.selHFDs.name}`;
+    document.getElementById('hf-prog').style.display='none';
+    document.getElementById('hf-btn').disabled=false;
+    refreshOV(); toast('Streamed!');
+  },'hf-pl','hf-pf');
+}
+
+async function streamManual() {
+  const raw=document.getElementById('hf-manual-input').value.trim();
+  if(!raw){toast('Enter a dataset ID','error');return;}
+  // Handle full URLs too
+  let ds_id=raw;
+  if(raw.includes('huggingface.co/datasets/'))
+    ds_id=raw.replace(/.*huggingface\.co\/datasets\//,'').split('/').slice(0,2).join('/');
+  const n=1000;
+  // Check access first
+  const ok = await checkAndStream(ds_id, null);
+  if(!ok) return;
+  document.getElementById('hf-manual-prog').style.display='block';
+  await fetch('/api/hf_manual',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({dataset_id:ds_id,n_samples:n})});
+  pollProgress('hf-manual-pl','hf-manual-pf',()=>{
+    document.getElementById('hf-manual-done').style.display='block';
+    document.getElementById('hf-manual-done').textContent=`✅ Streamed from ${ds_id}`;
+    document.getElementById('hf-manual-prog').style.display='none';
+    refreshOV(); toast('Streamed from '+ds_id+'!');
+  },'hf-manual-pl','hf-manual-pf');
+}
+
+// ── URL FETCH ──────────────────────────────────────────────────────────────────
+function addURLRow() {
+  S.urlIdx++;
+  const d=document.createElement('div');d.className='url-row';
+  d.innerHTML=`<input id="url-${S.urlIdx}" placeholder="https://..."><button class="btn btn-p" onclick="fetchURL('url-${S.urlIdx}')">Fetch</button>`;
+  document.getElementById('url-rows').appendChild(d);
+}
+
+async function fetchURL(id) {
+  const url=document.getElementById(id)?.value?.trim();
+  if(!url){toast('Enter a URL','error');return;}
+  // HF redirect
+  if(url.includes('huggingface.co/datasets/')){
+    const ds=url.replace(/.*huggingface\.co\/datasets\//,'').split('/').slice(0,2).join('/');
+    document.getElementById('url-results').innerHTML+=`<div class="url-warn">
+      <strong style="color:var(--yellow);">⚠️ HuggingFace dataset detected: ${ds}</strong><br>
+      <span style="font-size:.72rem;">Use the <strong>HF Datasets tab</strong> to stream real training data from this dataset.</span><br>
+      <button class="btn btn-p" style="margin-top:6px;padding:5px 10px;" onclick="resTab('hf',document.querySelector('.res-tab:nth-child(2)'))">Go to HF Datasets →</button>
+    </div>`;
+    return;
+  }
+  toast('Fetching...');
+  await fetch('/api/fetch_url',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url})});
+  pollProgress(null,null,()=>{
+    document.getElementById('url-results').innerHTML+=`<div class="url-res"><div class="ur-t">✅ ${url.substring(0,60)}</div><div class="ur-w">fetched successfully</div></div>`;
+    refreshOV();
+  });
+}
+
+// ── REMOTE FETCH ──────────────────────────────────────────────────────────────
+function addRemoteRow() {
+  S.remIdx++;
+  const d=document.createElement('div');d.className='url-row';
+  d.innerHTML=`<input id="rem-${S.remIdx}" placeholder="https://drive.google.com/...  or  s3://..."><button class="btn btn-p" onclick="fetchRemote('rem-${S.remIdx}')">Fetch</button>`;
+  document.getElementById('remote-rows').appendChild(d);
+}
+
+async function fetchRemote(id) {
+  const url=document.getElementById(id)?.value?.trim();
+  if(!url){toast('Enter a URL','error');return;}
+  if(url.includes('huggingface.co/datasets/')){
+    const ds=url.replace(/.*huggingface\.co\/datasets\//,'').split('/').slice(0,2).join('/');
+    document.getElementById('remote-results').innerHTML+=`<div class="url-warn"><strong style="color:var(--yellow);">⚠️ HuggingFace dataset: ${ds}</strong><br><span style="font-size:.72rem;">Use the <strong>HF Datasets tab</strong> instead.</span></div>`;
+    return;
+  }
+  toast('Fetching remote...');
+  await fetch('/api/fetch_remote',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url})});
+  pollProgress(null,null,()=>{
+    document.getElementById('remote-results').innerHTML+=`<div class="url-res"><div class="ur-t">✅ ${url.substring(0,55)}</div><div class="ur-w">fetched successfully</div></div>`;
+    refreshOV();
+  });
+}
+
+// ── OVERVIEW ──────────────────────────────────────────────────────────────────
+async function refreshOV() {
+  const r=await fetch('/api/data_overview'), d=await r.json();
+  if(d.total>0){
+    document.getElementById('ov-bar').style.display='flex';
+    document.getElementById('ov-chunks').textContent=d.total;
+    document.getElementById('ov-words').textContent=d.words.toLocaleString();
+    document.getElementById('ov-src').innerHTML=Object.entries(d.src||{}).map(([k,v])=>`<span class="bdg bb">${k}:${v}</span>`).join('');
+  }
+}
+
+// ── CLEAN ─────────────────────────────────────────────────────────────────────
+function renderTechList() {
+  const techs=['Encoding fix','Unicode normalize','PII removal','Page numbers',
+               'Headers/footers','Watermarks','Boilerplate','Broken sentences',
+               'Table noise','Whitespace','Repeated chars','Code cleaning',
+               'URL removal','Quality gate','Exact dedup','Near dedup (3-gram)','Sentence dedup'];
+  document.getElementById('tech-list').innerHTML=techs.map(t=>`
+    <div class="tech-item"><div class="tech-dot"></div>${t}</div>`).join('');
+}
+
+async function cleanData() {
+  document.getElementById('clean-btn').disabled=true;
+  document.getElementById('clean-prog').style.display='block';
+  await fetch('/api/clean',{method:'POST'});
+  pollProgress('clean-pl','clean-pf',async()=>{
+    const r=await fetch('/api/clean_stats'), d=await r.json();
+    document.getElementById('cr-orig').textContent=d.stats?.original||0;
+    document.getElementById('cr-final').textContent=d.stats?.final||0;
+    document.getElementById('cr-rem').textContent=(d.stats?.removal_rate||0)+'%';
+    document.getElementById('cr-qlabel').textContent=d.quality?.label||'';
+    document.getElementById('cr-qlabel').style.color=d.quality?.color||'#20d4a0';
+    document.getElementById('cr-bar').style.width=(d.quality?.score||0)+'%';
+    // Show technique hits
+    const th=document.getElementById('tech-hits');
+    const hits=d.stats?.techniques||{};
+    th.innerHTML=Object.entries(hits).filter(([,v])=>v>0).map(([k,v])=>`<span class="bdg bb">${k}:${v}</span>`).join('');
+    document.getElementById('clean-prog').style.display='none';
+    document.getElementById('clean-result').style.display='block';
+    document.getElementById('clean-btn').disabled=false;
+    document.getElementById('nav-clean').classList.add('done');
+    toast('Data cleaned! Quality: '+(d.quality?.label||'ready'));
+  });
+}
+
+// ── MODEL MATCH ───────────────────────────────────────────────────────────────
+async function loadCats() {
+  const r=await fetch('/api/categories'), cats=await r.json();
+  document.getElementById('cat-grid').innerHTML=cats.map(c=>`
+    <div class="cc" onclick="pickCat('${c.id}',this)">
+      <div class="cc-icon">${c.icon}</div>
+      <div class="cc-name">${c.name}</div>
+    </div>`).join('');
+}
+
+async function pickCat(cat, el) {
+  document.querySelectorAll('.cc').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  const r=await fetch('/api/match_model',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({category:cat})}), d=await r.json();
+  if(d.best){
+    S.model=d.best;
+    document.getElementById('mm-name').textContent=d.best.name;
+    document.getElementById('mm-why').textContent=d.best.why;
+    document.getElementById('mm-tags').innerHTML=[
+      `<span class="bdg bb">${d.best.params}</span>`,
+      `<span class="bdg bb">~${d.best.gguf_gb}GB</span>`,
+      `<span class="bdg bb">~${d.best.colab_min}min</span>`,
+      d.best.recommended?'<span class="bdg bg">★ REC</span>':''
+    ].join('');
+    if(d.best.hardware_warning){
+      document.getElementById('mm-warn').style.display='block';
+      document.getElementById('mm-warn').textContent='⚠️ '+d.best.hardware_warning;
+    }
+    document.getElementById('all-models').innerHTML=(d.all_models||[]).map(m=>`
+      <div class="model-opt ${m.name===d.best.name?'sel':''}" onclick="pickModel(${JSON.stringify(m).replace(/"/g,'&quot;')},this)">
+        <div class="mo-radio"></div>
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:.82rem;">${m.name} ${m.recommended?'⭐':''}</div>
+          <div style="font-size:.66rem;color:var(--muted2);margin-top:1px;">${m.why}</div>
+          <div style="margin-top:4px;display:flex;gap:4px;">
+            <span class="bdg bb">${m.params}</span>
+            <span class="bdg bb">~${m.colab_min}min</span>
+            ${!m.fits_ram?'<span class="bdg" style="background:rgba(247,112,112,.1);border-color:var(--red);color:var(--red);">Low RAM</span>':''}
+          </div>
+        </div>
+      </div>`).join('');
+    document.getElementById('match-confirm').style.display='block';
+    document.getElementById('match-confirm').textContent='✅ Selected: '+d.best.name;
+    document.getElementById('match-result').style.display='block';
+    document.getElementById('nav-match').classList.add('done');
+  }
+}
+
+function pickModel(m, el) {
+  S.model=m;
+  document.querySelectorAll('.model-opt').forEach(e=>e.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('match-confirm').textContent='✅ Selected: '+m.name;
+}
+
+// ── MODE ──────────────────────────────────────────────────────────────────────
+function selMode(mode, el) {
+  S.mode=mode;
+  document.querySelectorAll('.mc').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+// ── GENERATE PAIRS ────────────────────────────────────────────────────────────
+async function genPairs() {
+  const maxP=parseInt(document.getElementById('max-pairs').value);
+  document.getElementById('pairs-btn').disabled=true;
+  document.getElementById('pairs-prog').style.display='block';
+  await fetch('/api/generate_pairs',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({mode:S.mode,max_pairs:maxP})});
+  pollProgress('pairs-pl','pairs-pf',async()=>{
+    const r=await fetch('/api/pairs_stats'), d=await r.json();
+    document.getElementById('pr-total').textContent=(d.total||0).toLocaleString();
+    document.getElementById('pr-ref').textContent=d.types?.refusal||0;
+    document.getElementById('pr-tok').textContent=(d.tokens_est||0).toLocaleString();
+    document.getElementById('pr-llm').textContent=d.llm_used?`LLM: Ollama (${d.llm_model})`:'Template-based';
+    document.getElementById('pair-previews').innerHTML=(d.previews||[]).map(p=>`
+      <div class="pp"><div class="pp-q">❓ ${p.q}</div><div class="pp-t">🤔 ${p.think}</div><div class="pp-a">💬 ${p.a}</div></div>`).join('');
+    document.getElementById('pairs-prog').style.display='none';
+    document.getElementById('pairs-result').style.display='block';
+    document.getElementById('pairs-btn').disabled=false;
+    document.getElementById('nav-pairs').classList.add('done');
+    toast('Pairs ready!');
+  });
+}
+
+// ── NOTEBOOK ──────────────────────────────────────────────────────────────────
+async function genNotebook() {
+  document.getElementById('nb-btn').disabled=true;
+  document.getElementById('nb-btn').textContent='⏳ Building...';
+  const r=await fetch('/api/generate_notebook',{method:'POST'}), d=await r.json();
+  if(d.success){
+    document.getElementById('nb-result').style.display='block';
+    document.getElementById('nav-notebook').classList.add('done');
+    toast('Notebook ready!');
+  } else {
+    toast(d.error||'Failed','error');
+  }
+  document.getElementById('nb-btn').disabled=false;
+  document.getElementById('nb-btn').textContent='📓 Regenerate';
+}
+
+// ── PROGRESS POLLER ────────────────────────────────────────────────────────────
+function pollProgress(labelId, fillId, onDone) {
+  const poll=setInterval(async()=>{
+    const r=await fetch('/api/progress'), d=await r.json();
+    const pct=d.total>0?Math.round((d.current/d.total)*100):35;
+    if(labelId) document.getElementById(labelId).textContent=d.step;
+    if(fillId)  document.getElementById(fillId).style.width=pct+'%';
+    if(d.step==='done'){clearInterval(poll);onDone(d);}
+    else if(d.step?.startsWith('error')){clearInterval(poll);toast(d.step,'error');}
+  },700);
+}
+
+
+// ── HF API DIRECT ─────────────────────────────────────────────────────────────
+async function fetchDatasetInfo() {
+  const raw = document.getElementById('hf-manual-input').value.trim();
+  if(!raw){toast('Enter a dataset ID','error');return;}
+  let ds_id = raw;
+  if(raw.includes('huggingface.co/datasets/'))
+    ds_id = raw.replace(/.*huggingface\.co\/datasets\//,'').split('/').slice(0,2).join('/');
+
+  document.getElementById('hf-info-btn').textContent='Checking...';
+  document.getElementById('hf-info-btn').disabled=true;
+
+  const r = await fetch(`/api/hf_dataset_info?dataset_id=${encodeURIComponent(ds_id)}`);
+  const d = await r.json();
+
+  document.getElementById('hf-info-btn').textContent='Check';
+  document.getElementById('hf-info-btn').disabled=false;
+
+  const box = document.getElementById('hf-ds-info');
+  const content = document.getElementById('hf-ds-info-content');
+  box.style.display='block';
+
+  if(d.splits && d.splits.length>0){
+    // Auto-fill split and config
+    const firstSplit  = d.splits[0]  || 'train';
+    const firstConfig = d.configs[0] || 'default';
+    document.getElementById('hf-api-split').value  = firstSplit;
+    document.getElementById('hf-api-config').value = firstConfig;
+
+    content.innerHTML = `
+      <div style="color:var(--green);font-weight:700;margin-bottom:6px;">✅ Dataset accessible</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <span class="bdg bb">Splits: ${d.splits.join(', ')}</span>
+        <span class="bdg bb">Configs: ${d.configs.join(', ')}</span>
+      </div>`;
+    toast('Dataset info loaded');
+  } else if(d.splits_error){
+    content.innerHTML = `<div style="color:var(--yellow);">⚠️ ${d.splits_error}</div>
+      <div style="font-size:.68rem;color:var(--muted2);margin-top:4px;">You may still try streaming — some datasets work without split info.</div>`;
+  } else {
+    content.innerHTML = `<div style="color:var(--muted2);">No split info available — try streaming anyway.</div>`;
+  }
+}
+
+async function streamAPIMethod() {
+  const raw = document.getElementById('hf-manual-input').value.trim();
+  if(!raw){toast('Enter a dataset ID','error');return;}
+  let ds_id = raw;
+  if(raw.includes('huggingface.co/datasets/'))
+    ds_id = raw.replace(/.*huggingface\.co\/datasets\//,'').split('/').slice(0,2).join('/');
+
+  const config = document.getElementById('hf-api-config').value.trim() || 'default';
+  const split  = document.getElementById('hf-api-split').value.trim()  || 'train';
+  const n      = parseInt(document.getElementById('hf-api-n').value);
+
+  document.getElementById('hf-api-btn').disabled=true;
+  document.getElementById('hf-manual-prog').style.display='block';
+  document.getElementById('hf-manual-done').style.display='none';
+  document.getElementById('hf-manual-pl').textContent='Validating...';
+
+  // Validate first
+  const vr = await fetch(`/api/hf_validate?dataset_id=${encodeURIComponent(ds_id)}`);
+  const vd = await vr.json();
+  if(!vd.ok){
+    document.getElementById('hf-api-btn').disabled=false;
+    document.getElementById('hf-manual-prog').style.display='none';
+    document.getElementById('hf-manual-done').style.display='block';
+    document.getElementById('hf-manual-done').style.background='rgba(247,112,112,.06)';
+    document.getElementById('hf-manual-done').style.color='#f79090';
+    document.getElementById('hf-manual-done').innerHTML=`❌ ${vd.error}<br>
+      <span style="font-size:.7rem;">Try: bigcode/starcoderdata or nampdn-ai/tiny-codes</span>`;
+    toast('Dataset error: '+vd.error,'error');
+    return;
+  }
+  // Show detected fields
+  if(vd.fields) document.getElementById('hf-manual-pl').textContent=
+    'Fields found: '+vd.fields.slice(0,4).join(', ')+'  — streaming...';
+
+  await fetch('/api/hf_api_stream',{method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({dataset_id:ds_id,config,split,n_samples:n})});
+
+  pollProgress('hf-manual-pl','hf-manual-pf', (d)=>{
+    document.getElementById('hf-api-btn').disabled=false;
+    document.getElementById('hf-manual-prog').style.display='none';
+    if(d.step?.startsWith('error')){
+      document.getElementById('hf-manual-done').style.display='block';
+      document.getElementById('hf-manual-done').style.background='rgba(247,112,112,.06)';
+      document.getElementById('hf-manual-done').style.color='#f79090';
+      document.getElementById('hf-manual-done').textContent='❌ '+d.step.replace('error: ','');
+    } else {
+      document.getElementById('hf-manual-done').style.display='block';
+      document.getElementById('hf-manual-done').style.background='';
+      document.getElementById('hf-manual-done').style.color='';
+      document.getElementById('hf-manual-done').textContent=`✅ Streamed ${d.pairs} chunks from ${ds_id} via API`;
+      refreshOV();
+      toast('Streamed '+d.pairs+' chunks!');
+    }
+  });
+}
+
+
+// ── HF TOKEN ──────────────────────────────────────────────────────────────────
+async function setHFToken() {
+  const token = document.getElementById('hf-token-input').value.trim();
+  if(!token){toast('Enter your HF token','error');return;}
+  document.getElementById('hf-token-btn').textContent='Verifying...';
+  document.getElementById('hf-token-btn').disabled=true;
+
+  const r = await fetch('/api/hf_set_token',{method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({token})});
+  const d = await r.json();
+
+  document.getElementById('hf-token-btn').disabled=false;
+  document.getElementById('hf-token-btn').textContent='Verify & Save';
+
+  if(d.success){
+    document.getElementById('hf-token-status').textContent='✅ '+d.username;
+    document.getElementById('hf-token-status').style.color='var(--green)';
+    document.getElementById('hf-token-msg').style.display='block';
+    document.getElementById('hf-token-msg').textContent='✅ '+d.message+' — gated datasets now unlocked';
+    document.getElementById('hf-token-clear').style.display='inline-flex';
+    document.getElementById('hf-token-input').value='';
+    document.getElementById('hf-token-input').placeholder='Token saved for this session ✅';
+    toast('HF token saved — '+d.username);
+  } else {
+    document.getElementById('hf-token-msg').style.display='block';
+    document.getElementById('hf-token-msg').style.background='rgba(247,112,112,.06)';
+    document.getElementById('hf-token-msg').style.borderColor='rgba(247,112,112,.2)';
+    document.getElementById('hf-token-msg').style.color='#f79090';
+    document.getElementById('hf-token-msg').textContent='❌ '+(d.error||'Invalid token');
+    toast('Invalid token','error');
+  }
+}
+
+async function clearHFToken() {
+  await fetch('/api/hf_set_token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:''})});
+  document.getElementById('hf-token-status').textContent='Not logged in';
+  document.getElementById('hf-token-status').style.color='var(--muted2)';
+  document.getElementById('hf-token-msg').style.display='none';
+  document.getElementById('hf-token-clear').style.display='none';
+  document.getElementById('hf-token-input').placeholder='hf_xxxxxxxxxxxxxxxxxxxx — needed for gated datasets';
+  toast('Token cleared','warn');
+}
+
+// Check dataset access before streaming (shows gated warning)
+async function checkAndStream(dataset_id, streamFn) {
+  const r = await fetch(`/api/hf_check_dataset?dataset_id=${encodeURIComponent(dataset_id)}`);
+  const d = await r.json();
+  if(!d.accessible){
+    toast(d.error||'Cannot access dataset','error');
+    // Show token box prominently if auth issue
+    if(d.error && (d.error.includes('auth') || d.error.includes('token') || d.error.includes('denied'))){
+      document.getElementById('hf-token-msg').style.display='block';
+      document.getElementById('hf-token-msg').textContent='⚠️ '+d.error+' — add your HF token above';
+      document.getElementById('hf-token-msg').style.background='rgba(245,192,48,.06)';
+      document.getElementById('hf-token-msg').style.color='var(--yellow)';
+    }
+    return false;
+  }
+  if(d.gated){
+    toast('Gated dataset — using your HF token','warn');
+  }
+  return true;
+}
+
+
+// ── WEB COLLECTION ────────────────────────────────────────────────────────────
+let webSourcesSel = new Set(['web','wikipedia']);
+let webSampleTarget = 200000;
+
+async function loadWebSources() {
+  const r    = await fetch('/api/web_sources');
+  const srcs = await r.json();
+  document.getElementById('web-sources').innerHTML = srcs.map(s=>`
+    <div onclick="toggleWebSrc('${s.id}',this)"
+      style="padding:6px 10px;border:1px solid ${webSourcesSel.has(s.id)?'var(--green)':'var(--border)'};
+      border-radius:6px;cursor:pointer;font-size:.72rem;background:${webSourcesSel.has(s.id)?'rgba(32,212,160,.06)':'var(--s2)'};
+      transition:all .15s;" id="wsrc-${s.id}">
+      ${s.icon} ${s.name}
+    </div>`).join('');
+
+  // Load sample buttons
+  const r2 = await fetch('/api/sample_guide');
+  const guide = await r2.json();
+  document.getElementById('sample-btns').innerHTML = Object.entries(guide).map(([k,v])=>`
+    <div onclick="setWebSamples(${v.n},this)"
+      style="padding:7px;border:1px solid ${v.n===webSampleTarget?'var(--green)':'var(--border)'};
+      border-radius:6px;cursor:pointer;text-align:center;font-size:.68rem;
+      background:${v.n===webSampleTarget?'rgba(32,212,160,.06)':'var(--s2)'};
+      font-family:'JetBrains Mono',monospace;" id="ssamp-${k}">
+      ${v.label}
+    </div>`).join('');
+}
+
+function toggleWebSrc(id, el) {
+  if(webSourcesSel.has(id)){
+    webSourcesSel.delete(id);
+    el.style.borderColor='var(--border)';
+    el.style.background='var(--s2)';
+  } else {
+    webSourcesSel.add(id);
+    el.style.borderColor='var(--green)';
+    el.style.background='rgba(32,212,160,.06)';
+  }
+}
+
+function setWebSamples(n, el) {
+  webSampleTarget = n;
+  document.querySelectorAll('[id^="ssamp-"]').forEach(e=>{
+    e.style.borderColor='var(--border)';
+    e.style.background='var(--s2)';
+  });
+  el.style.borderColor='var(--green)';
+  el.style.background='rgba(32,212,160,.06)';
+}
+
+async function collectWeb() {
+  const topic = document.getElementById('web-topic').value.trim();
+  if(!topic){toast('Enter a topic to search','error');return;}
+  if(webSourcesSel.size===0){toast('Select at least one source','error');return;}
+
+  document.getElementById('web-btn').disabled=true;
+  document.getElementById('web-prog').style.display='block';
+  document.getElementById('web-done').style.display='none';
+
+  const r = await fetch('/api/web_collect',{method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      topic:    topic,
+      sources:  Array.from(webSourcesSel),
+      n_samples: webSampleTarget,
+    })});
+  const d = await r.json();
+  if(d.estimated_time) toast('Collecting... '+d.estimated_time,'warn');
+
+  pollProgress('web-pl','web-pf', (pd)=>{
+    document.getElementById('web-btn').disabled=false;
+    document.getElementById('web-prog').style.display='none';
+    if(pd.step?.startsWith('error')){
+      toast(pd.step,'error');
+    } else {
+      document.getElementById('web-done').style.display='block';
+      document.getElementById('web-done').textContent=
+        `✅ Collected ${pd.pairs.toLocaleString()} chunks from web: "${topic}"`;
+      document.getElementById('nav-resources').classList.add('done');
+      refreshOV();
+      toast('Web collection done! '+pd.pairs.toLocaleString()+' chunks');
+    }
+  });
+}
+
+
+
+// ── UNIVERSAL MODEL SELECTOR ──────────────────────────────────────────────────
+let modelSearchTimer = null;
+
+function quickPick(modelId) {
+  document.getElementById('model-search-input').value = modelId;
+  document.getElementById('model-search-results').style.display = 'none';
+  doResolveModel(modelId);
+}
+
+function searchModels(q) {
+  clearTimeout(modelSearchTimer);
+  const box = document.getElementById('model-search-results');
+  if (!q || q.length < 2) { box.style.display = 'none'; return; }
+  modelSearchTimer = setTimeout(async () => {
+    const r    = await fetch('/api/model_search?q=' + encodeURIComponent(q));
+    const data = await r.json();
+    if (!data.length) {
+      box.style.display = 'block';
+      box.innerHTML = `<div class="info iy" style="font-size:.74rem;">
+        No local match for "<strong>${q}</strong>" — paste full ID: <code style="color:var(--blue);">owner/model-name</code><br>
+        Examples: <code onclick="quickPick('unsloth/Qwen3.5-4B')" style="color:var(--blue);cursor:pointer;">unsloth/Qwen3.5-4B</code>
+        &nbsp; <code onclick="quickPick('unsloth/Qwen2.5-Coder-7B-Instruct')" style="color:var(--blue);cursor:pointer;">unsloth/Qwen2.5-Coder-7B-Instruct</code>
+      </div>`;
+      return;
+    }
+    box.style.display = 'block';
+    box.innerHTML = data.slice(0, 10).map(m => `
+      <div class="model-opt" onclick="selectModelFromSearch(${JSON.stringify(m).replace(/"/g, '&quot;')})" style="margin-bottom:5px;cursor:pointer;">
+        <div class="mo-radio"></div>
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:.82rem;">
+            ${m.star ? '⭐ ' : ''}${m.name || m.id.split('/')[1]}
+            ${m.unsloth ? '<span class="bdg bg" style="font-size:.55rem;">⚡ Unsloth</span>' : ''}
+            ${m.gated  ? '<span class="bdg bo" style="font-size:.55rem;">🔒 Gated</span>' : ''}
+          </div>
+          ${m.desc ? `<div style="font-size:.7rem;color:var(--text);margin-top:1px;">${m.desc}</div>` : ''}
+          <div style="font-size:.62rem;color:var(--blue);font-family:'JetBrains Mono',monospace;margin-top:2px;">${m.id}</div>
+          <div style="margin-top:3px;display:flex;gap:4px;">
+            ${m.params ? `<span class="bdg bb">${m.params}</span>` : ''}
+            ${m.cat    ? `<span class="bdg bp">${m.cat}</span>` : ''}
+          </div>
+        </div>
+      </div>`).join('');
+  }, 350);
+}
+
+async function resolveModel() {
+  const input = document.getElementById('model-search-input').value.trim();
+  if (!input) { toast('Enter a model name or ID', 'error'); return; }
+  if (input.includes('/')) {
+    await doResolveModel(input);
+    return;
+  }
+  const r    = await fetch('/api/model_search?q=' + encodeURIComponent(input));
+  const data = await r.json();
+  if (data.length > 0) {
+    document.getElementById('model-search-results').style.display = 'block';
+    document.getElementById('model-search-results').innerHTML =
+      `<div style="font-size:.72rem;color:var(--yellow);padding:6px 0 8px;">
+        Found ${data.length} models — click one or paste full ID (owner/model-name)
+      </div>` +
+      data.slice(0, 8).map(m => `
+        <div class="model-opt" onclick="selectModelFromSearch(${JSON.stringify(m).replace(/"/g,'&quot;')})" style="margin-bottom:5px;cursor:pointer;">
+          <div class="mo-radio"></div>
+          <div style="flex:1;">
+            <div style="font-weight:700;font-size:.82rem;">${m.star?'⭐ ':''}${m.name||m.id.split('/')[1]}</div>
+            ${m.desc?`<div style="font-size:.7rem;margin-top:1px;">${m.desc}</div>`:''}
+            <div style="font-size:.62rem;color:var(--blue);font-family:'JetBrains Mono',monospace;">${m.id}</div>
+            <div style="margin-top:2px;"><span class="bdg bb">${m.params||''}</span></div>
+          </div>
+        </div>`).join('');
+  } else {
+    toast('Not found — paste full ID like: unsloth/Qwen3.5-4B', 'warn');
+  }
+}
+
+async function selectModelFromSearch(m) {
+  document.getElementById('model-search-results').style.display = 'none';
+  document.getElementById('model-search-input').value = m.id;
+  await doResolveModel(m.id);
+}
+
+async function doResolveModel(model_id) {
+  const btn = document.getElementById('model-search-input');
+  toast('Resolving ' + model_id + '...');
+  try {
+    const r    = await fetch('/api/model_resolve', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({model_id})
+    });
+    const conf = await r.json();
+    if (conf.error) { toast(conf.error, 'error'); return; }
+    S.model = conf;
+    showSelectedModel(conf);
+    document.getElementById('model-search-results').style.display = 'none';
+    document.getElementById('nav-match').classList.add('done');
+    toast('✅ Model ready: ' + conf.name);
+  } catch(e) {
+    toast('Failed to resolve model: ' + e.message, 'error');
+  }
+}
+
+function showSelectedModel(conf) {
+  document.getElementById('sel-model-name').textContent = conf.name || conf.id;
+  document.getElementById('sel-model-id').textContent   = conf.id;
+  document.getElementById('sel-model-arch').textContent =
+    'arch: ' + conf.arch + ' | ' + conf.size + ' | LoRA r=' + conf.lora_r +
+    ' | ~' + conf.colab_min + 'min | GGUF ~' + conf.gguf_gb + 'GB';
+  document.getElementById('sel-model-tags').innerHTML = [
+    `<span class="bdg bb">${conf.params}</span>`,
+    `<span class="bdg bb">~${conf.gguf_gb}GB GGUF</span>`,
+    `<span class="bdg bb">~${conf.colab_min}min</span>`,
+    conf.unsloth
+      ? '<span class="bdg bg">⚡ Unsloth (fast)</span>'
+      : '<span class="bdg bo">transformers fallback</span>',
+  ].join('');
+  const warn = document.getElementById('sel-model-gated');
+  if (conf.gated) {
+    warn.style.display = 'block';
+    warn.textContent   = '🔒 Gated dataset — add your HF token first';
+  } else {
+    warn.style.display = 'none';
+  }
+  document.getElementById('model-selected-card').style.display = 'block';
+  document.querySelectorAll('.model-opt').forEach(e => e.classList.remove('sel'));
+}
+
+async function loadPopular(cat, el) {
+  document.querySelectorAll('#model-cat-tabs button').forEach(b => {
+    b.style.color       = 'var(--muted2)';
+    b.style.borderColor = 'var(--border)';
+    b.style.background  = 'transparent';
+  });
+  if (el) {
+    el.style.color       = 'var(--blue)';
+    el.style.borderColor = 'var(--blue)';
+    el.style.background  = 'rgba(79,142,247,.1)';
+  }
+  const r    = await fetch('/api/model_popular?category=' + cat);
+  const data = await r.json();
+  const box  = document.getElementById('popular-models');
+  if (!data || !data.length) {
+    box.innerHTML = '<div style="color:var(--muted2);font-size:.78rem;padding:8px;">No models found</div>';
+    return;
+  }
+  box.innerHTML = data.map(m => `
+    <div class="model-opt" onclick="doResolveModel('${m.id}')" style="margin-bottom:6px;cursor:pointer;">
+      <div class="mo-radio"></div>
+      <div style="flex:1;">
+        <div style="font-weight:700;font-size:.82rem;">
+          ${m.star ? '⭐ ' : ''}${m.name || m.id.split('/')[1]}
+          ${m.unsloth !== false ? '<span class="bdg bg" style="font-size:.55rem;">⚡ Unsloth</span>' : ''}
+        </div>
+        ${m.desc ? `<div style="font-size:.7rem;color:var(--text);margin-top:1px;">${m.desc}</div>` : ''}
+        <div style="font-size:.62rem;color:var(--muted2);font-family:'JetBrains Mono',monospace;margin-top:2px;">${m.id}</div>
+        <div style="margin-top:3px;display:flex;gap:4px;">
+          <span class="bdg bb">${m.params}</span>
+          <span class="bdg bp">${m.cat || 'general'}</span>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+loadHFCats();
+loadCats();
+renderTechList();
+loadWebSources();
+// Load popular models on page load
+setTimeout(async()=>{
+  await loadPopular("all", document.querySelector('#model-cat-tabs button'));
+}, 500);
+</script>
+</body>
+</html>

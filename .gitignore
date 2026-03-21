@@ -1,0 +1,10 @@
+data/
+output/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.gguf
+.DS_Store
+checkpoints/
+*.egg-info/
