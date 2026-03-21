@@ -1,6 +1,6 @@
 <div align="center">
 
-# PersonalForge v10
+# PersonalForge v2
 
 ### Fine-tune any LLM on your own data — free, offline, no coding
 
